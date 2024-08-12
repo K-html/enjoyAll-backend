@@ -46,12 +46,14 @@ public class AuthController {
         user.updateUserSocial(socialEmail);
         user = userRepository.save(user);
         if (user.getStatus() == UserStatus.LOGIN) {
-            return ApiResponseUtil.createSuccessResponse("회원가입이 필요합니다.", user.getId());
+            return ApiResponseUtil.createResponse(CommonErrorCode.FORBIDDEN_ERROR.getHttpStatus().value()
+                    ,"NEED_JOIN",
+                    user.getId());
         } else if (user.getStatus() == UserStatus.SLEEP){
             user.wakeUp();
         }
         Map<String, String> response = createLoginToken(user);
-        return ApiResponseUtil.createSuccessResponse("로그인 성공", response);
+        return ApiResponseUtil.createSuccessResponse("SUCCESS LOGIN", response);
     }
     
     /*
