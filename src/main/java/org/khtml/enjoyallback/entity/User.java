@@ -3,6 +3,7 @@ package org.khtml.enjoyallback.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.khtml.enjoyallback.dto.UserInfo;
+import org.khtml.enjoyallback.dto.UserReqDto;
 import org.khtml.enjoyallback.global.UserStatus;
 
 import java.util.Set;
@@ -36,10 +37,20 @@ public class User {
     )
     private Set<Keyword> keywords;
 
-    public void updateUserInfo(UserInfo userInfo) {
-        if (userInfo.getName() != null && !userInfo.getName().trim().isEmpty()){
-            this.setName(userInfo.getName());
+    public void joinUser(UserReqDto userReqDto) {
+        this.socialId = userReqDto.getSocialId();
+        this.socialEmail = userReqDto.getSocialEmail();
+        this.status = UserStatus.JOIN;
+    }
+
+    public User updateUserSocial(String socialEmail) {
+        if (socialEmail != null && !this.socialEmail.equals(socialEmail)) {
+            this.socialEmail = socialEmail;
         }
-        this.contact = userInfo.getContact();
+        return this;
+    }
+
+    public void wakeUp() {
+        this.status = UserStatus.JOIN;
     }
 }
