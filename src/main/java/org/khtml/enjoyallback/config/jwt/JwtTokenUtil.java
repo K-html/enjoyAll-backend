@@ -52,7 +52,7 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    public boolean validateToken(String token, String userId) {
+    public boolean isValidateToken(String token, String userId) {
         final String extractedUserId = extractUserId(token);
         return (extractedUserId.equals(userId) && isTokenNotExpired(token));
     }
