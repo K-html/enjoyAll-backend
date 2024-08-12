@@ -3,8 +3,11 @@ package org.khtml.enjoyallback.config.jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
@@ -51,10 +54,10 @@ public class JwtTokenUtil {
 
     public boolean validateToken(String token, String userId) {
         final String extractedUserId = extractUserId(token);
-        return (extractedUserId.equals(userId) && !isTokenExpired(token));
+        return (extractedUserId.equals(userId) && isTokenNotExpired(token));
     }
 
-    public boolean isTokenExpired(String token) {
+    public boolean isTokenNotExpired(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -63,7 +66,14 @@ public class JwtTokenUtil {
                 .getExpiration()
                 .before(new Date());
     }
-
+    public String extractTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        } else {
+            throw new AccessDeniedException("올바르지 않은 엑세스 토큰");
+        }
+    }
     public String extractUserId(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
