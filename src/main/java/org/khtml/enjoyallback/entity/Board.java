@@ -2,6 +2,7 @@ package org.khtml.enjoyallback.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.khtml.enjoyallback.dto.BoardDetail;
 import org.khtml.enjoyallback.global.Category;
 import org.khtml.enjoyallback.global.KeywordEnum;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "BOARD")
+@Table(name = "Board")
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,5 +47,17 @@ public class Board {
     @Column(name = "view_count")
     private Long viewCount=0L;
 
+    public void AiCreateBoard(BoardDetail boardDetail){
+        this.imgUrl = boardDetail.getImgUrl();
+        this.title = boardDetail.getTitle();
+        this.category = boardDetail.getCategory();
+        this.keyword = boardDetail.getKeyword();
+        this.eligibility = boardDetail.getEligibility();
+        this.startDate = boardDetail.getStartDate();
+        this.endDate = boardDetail.getEndDate();
+        this.contact = boardDetail.getContact();
+        this.content = boardDetail.getContent();
+        this.applyMethod = boardDetail.getApplyMethod();
+    }
 }
 

@@ -33,15 +33,15 @@ public class JwtTokenUtil {
         this.key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
     }
 
-    public String createAccessToken(Long userId) {
+    public String createAccessToken(String userId) {
         return createToken(userId, ACCESS_TOKEN_EXPIRY_TIME);
     }
 
-    public String createRefreshToken(Long userId) {
+    public String createRefreshToken(String userId) {
         return createToken(userId, REFRESH_TOKEN_EXPIRY_TIME);
     }
 
-    private String createToken(Long userId, long expiryTime) {
+    private String createToken(String userId, long expiryTime) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expiryTime);
         return Jwts.builder()
