@@ -1,5 +1,6 @@
 package org.khtml.enjoyallback.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.khtml.enjoyallback.api.Api_Response;
 import org.khtml.enjoyallback.config.jwt.JwtTokenUtil;
@@ -8,6 +9,7 @@ import org.khtml.enjoyallback.entity.User;
 import org.khtml.enjoyallback.global.UserStatus;
 import org.khtml.enjoyallback.global.code.CommonErrorCode;
 import org.khtml.enjoyallback.repository.UserRepository;
+import org.khtml.enjoyallback.service.UserService;
 import org.khtml.enjoyallback.util.ApiResponseUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +44,7 @@ public class AuthController {
                 .socialEmail(socialEmail)
                 .build());
         user.updateUserSocial(socialEmail);
-        userRepository.save(user);
+        user = userRepository.save(user);
         if (user.getStatus() == UserStatus.LOGIN) {
             return ApiResponseUtil.createSuccessResponse("회원가입이 필요합니다.", user.getId());
         } else if (user.getStatus() == UserStatus.SLEEP){
@@ -57,7 +59,7 @@ public class AuthController {
      */
     @PostMapping("/join")
     public ResponseEntity<Api_Response<Map<String, String>>> joinUser(@RequestBody UserReqDto userReqDto) {
-        User user = userRepository.findById(userReqDto.getUserId()).get();
+        User user = userRepository.findById(userReqDto.getUserId()).orElseThrow(EntityNotFoundException::new);
         user.joinUser(userReqDto);
         userRepository.save(user);
         Map<String, String> response = createLoginToken(user);
