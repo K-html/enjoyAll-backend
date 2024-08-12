@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,7 +23,7 @@ import java.util.Map;
 public class AuthController {
     private final JwtTokenUtil jwtTokenUtil;
     private final UserRepository userRepository;
-    
+
     /*
     카카오 소셜 정보 id와 email을 받아 사용자 존재 여부를 확인하고, 회원 가입 안내 또는 로그인을 진행하는 api
      */
@@ -35,15 +36,17 @@ public class AuthController {
             throw new AccessDeniedException(CommonErrorCode.MISSING_SOCIAL_INFO.getMessage());
         }
 
-        User user = userRepository.findUserBySocialId(socialId).orElse(null);
-        if (user == null) {
-            return ApiResponseUtil.createSuccessResponse("회원가입이 필요합니다.");
+        User user = userRepository.findUserBySocialId(socialId).orElseGet(() -> User.builder()
+                .socialId(socialId)
+                .socialEmail(socialEmail)
+                .build());
+        user.updateUserSocial(socialEmail);
+        userRepository.save(user);
+        if (user.getStatus() == UserStatus.LOGIN) {
+            return ApiResponseUtil.createSuccessResponse("회원가입이 필요합니다.", user.getId());
         } else if (user.getStatus() == UserStatus.SLEEP){
             user.wakeUp();
         }
-        user.updateUserSocial(socialEmail);
-        userRepository.save(user);
-
         Map<String, String> response = createLoginToken(user);
         return ApiResponseUtil.createSuccessResponse("로그인 성공", response);
     }
@@ -80,10 +83,14 @@ public class AuthController {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             refreshToken = authorizationHeader.substring(7);
         }
-        if (jwtTokenUtil.isTokenNotExpired(refreshToken)) {
-            String userId = jwtTokenUtil.extractUserId(refreshToken);
+        String userId = jwtTokenUtil.extractUserId(refreshToken);
+        if (jwtTokenUtil.isValidateToken(refreshToken, userId)) {
             String newAccessToken = jwtTokenUtil.createAccessToken(Long.valueOf(userId));
-            return ApiResponseUtil.createSuccessResponse("새로운 jwt 엑세스 토큰 발급 완료", newAccessToken);
+            String newRefreshToken = jwtTokenUtil.createRefreshToken(Long.valueOf(userId));
+            Map<String, String> response = new HashMap<>();
+            response.put("#jwtAccessToken", newAccessToken);
+            response.put("#jwtRefreshToken", newRefreshToken);
+            return ApiResponseUtil.createSuccessResponse("Create a new token", response);
         } else {
             return ApiResponseUtil.createErrorResponse(CommonErrorCode.MISSING_TOKEN);
         }

@@ -1,9 +1,12 @@
 package org.khtml.enjoyallback.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.khtml.enjoyallback.dto.UserInfo;
 import org.khtml.enjoyallback.dto.UserReqDto;
+import org.khtml.enjoyallback.global.KeywordEnum;
 import org.khtml.enjoyallback.global.UserStatus;
 
 import java.util.Set;
@@ -11,12 +14,13 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "USER")
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String socialName;
 
     @Column(name = "social_id", nullable = false)
     private String socialId;
@@ -26,8 +30,18 @@ public class User {
 
     private String contact;
 
+    private KeywordEnum keyword;
+
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+
+    @Builder
+    public User(String socialId, String socialEmail) {
+        this.socialId = socialId;
+        this.socialEmail = socialEmail;
+        this.status = UserStatus.LOGIN;
+    }
 
     @ManyToMany
     @JoinTable(
@@ -38,8 +52,8 @@ public class User {
     private Set<Keyword> keywords;
 
     public void joinUser(UserReqDto userReqDto) {
-        this.socialId = userReqDto.getSocialId();
-        this.socialEmail = userReqDto.getSocialEmail();
+        this.socialName = userReqDto.getSocialName();
+        this.keyword = userReqDto.getKeyword();
         this.status = UserStatus.JOIN;
     }
 
