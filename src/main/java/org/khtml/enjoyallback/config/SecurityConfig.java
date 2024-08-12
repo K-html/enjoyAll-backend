@@ -23,6 +23,7 @@ public class SecurityConfig {
                                 request
                                         .requestMatchers("/hc", "/env").permitAll()
                                         .requestMatchers("/auth/**").permitAll()
+                                        .requestMatchers("/board/**").permitAll()
                                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
