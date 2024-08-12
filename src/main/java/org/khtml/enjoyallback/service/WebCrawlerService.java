@@ -7,12 +7,15 @@ import org.jsoup.nodes.Element;
 import org.jsoup.HttpStatusException;
 import org.khtml.enjoyallback.entity.CrawledData;
 import org.khtml.enjoyallback.repository.CrawledDataRepository;
+import org.khtml.enjoyallback.util.UrlGenerator;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,15 +23,15 @@ public class WebCrawlerService {
 
     private static final Logger logger = LoggerFactory.getLogger(WebCrawlerService.class);
 
-    private CrawledDataRepository crawledDataRepository;
+    final private CrawledDataRepository crawledDataRepository;
 
-    //@PostConstruct
-//    public void init() {
-//        List<String> urls = UrlGenerator.generateUrls();
-//        for (String url : urls) {
-//            crawl(url);
-//        }
-//    }
+    @PostConstruct
+    public void init() {
+        List<String> urls = UrlGenerator.generateUrls();
+        for (String url : urls) {
+            crawl(url);
+        }
+    }
 
     public void crawl(String url) {
         try {

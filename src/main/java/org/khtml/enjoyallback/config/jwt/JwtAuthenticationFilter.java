@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,8 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    @Value("${jwt.ai-server-secret}")
+    private String AI_SECRET_KEY;
     private final JwtTokenUtil jwtTokenUtil;
     private final UserDetailsService userDetailsService;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
@@ -29,15 +32,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         if (pathMatcher.match("/hc", request.getServletPath()) ||
                 pathMatcher.match("/env", request.getServletPath()) ||
-                pathMatcher.match("/auth/**", request.getServletPath())) {
+                pathMatcher.match("/auth/**", request.getServletPath())||
+                pathMatcher.match("/board/**", request.getServletPath())){
             filterChain.doFilter(request, response);
             return;
+        }
+        if (pathMatcher.match("/board/ai", request.getServletPath()) ||
+        pathMatcher.match("/crawleData/ai", request.getServletPath())) {
+            String jwtToken = jwtTokenUtil.extractTokenFromRequest(request);
+
+            String secretKey = jwtTokenUtil.extractUserId(jwtToken);
+            if (secretKey.equals(AI_SECRET_KEY)) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(secretKey);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+            filterChain.doFilter(request, response);
         }
 
         String jwtToken = jwtTokenUtil.extractTokenFromRequest(request);
 
         String userId = jwtTokenUtil.extractUserId(jwtToken);
         if (StringUtils.hasText(jwtToken) && jwtTokenUtil.isValidateToken(jwtToken, userId)) {
+
             UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
