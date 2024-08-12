@@ -14,18 +14,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
-                        request
-                                .requestMatchers("/").permitAll()
-                                .requestMatchers("/api/auth/**").permitAll()
-                                .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                                request
+                                        .requestMatchers("/hc", "/env").permitAll()
+                                        .requestMatchers("/api/auth/**").permitAll()
+                                        .anyRequest().authenticated()
+                );
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

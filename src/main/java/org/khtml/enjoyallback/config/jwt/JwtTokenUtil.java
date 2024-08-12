@@ -1,6 +1,5 @@
 package org.khtml.enjoyallback.config.jwt;
 
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
