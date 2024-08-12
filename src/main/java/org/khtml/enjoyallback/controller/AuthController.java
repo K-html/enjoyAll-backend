@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 @RestController
@@ -56,7 +57,7 @@ public class AuthController {
      */
     @PostMapping("/join")
     public ResponseEntity<Api_Response<Map<String, String>>> joinUser(@RequestBody UserReqDto userReqDto) {
-        User user = new User();
+        User user = userRepository.findById(userReqDto.getUserId()).get();
         user.joinUser(userReqDto);
         userRepository.save(user);
         Map<String, String> response = createLoginToken(user);
