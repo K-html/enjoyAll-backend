@@ -11,6 +11,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -31,19 +33,18 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class DynamicWebCrawlerService {
     private final RestTemplate restTemplate;
-    private final static int SEC = 1_000;
+    private final static int MAX = 1000;
     private static final Logger logger = LoggerFactory.getLogger(WebCrawlerService.class);
     final private CrawledDataRepository crawledDataRepository;
 
 //    @PostConstruct
-    @Scheduled(initialDelay = 10*SEC, fixedDelay = Long.MAX_VALUE)
+    @Scheduled(initialDelay = 10_000, fixedDelay = Long.MAX_VALUE)
     public void init() throws Exception {
-        int MAX = 1000;
         for (int i = 1; i < MAX; ++i) {
             sendPostRequest(i);
-            logger.info(i + " / " + MAX);
         }
     }
     /*
@@ -52,6 +53,7 @@ public class DynamicWebCrawlerService {
      */
     @Async
     public void sendPostRequest(int page) throws Exception {
+        logger.info(page + " / " + MAX);
         String url = "https://www.bokjiro.go.kr/ssis-tbu/TWAT52005M/twataa/wlfareInfo/selectWlfareInfo.do";
 
         // 요청 헤더 설정
@@ -100,6 +102,7 @@ public class DynamicWebCrawlerService {
             crawledData.setUrl(url);
             crawledData.setContent(htmlDOM);
             crawledData.setTitle(welfareInfo.getWelfareInfoName());
+            logger.info("SAVE!!!!!!");
             crawledDataRepository.save(crawledData);
         }
     }
