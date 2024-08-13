@@ -29,11 +29,11 @@ public class WebCrawlerService {
     public void init() {
         List<String> urls = UrlGenerator.generateUrls();
         for (String url : urls) {
-            crawl(url);
+//            crawl(url);
         }
     }
 
-    public void crawl(String url) {
+    private void crawl(String url) {
         try {
             Document document = Jsoup.connect(url).get();
 

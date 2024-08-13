@@ -32,11 +32,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         if (pathMatcher.match("/hc", request.getServletPath()) ||
                 pathMatcher.match("/env", request.getServletPath()) ||
-                pathMatcher.match("/auth/**", request.getServletPath())||
-                pathMatcher.match("/board/**", request.getServletPath())){
+                pathMatcher.match("/auth/**", request.getServletPath()) ||
+                pathMatcher.match("/chat", request.getServletPath())) {
             filterChain.doFilter(request, response);
             return;
         }
+
         if (pathMatcher.match("/board/ai", request.getServletPath()) ||
                 pathMatcher.match("/crawleData/ai", request.getServletPath())) {
             String jwtToken = jwtTokenUtil.getTokenFromRequest(request);

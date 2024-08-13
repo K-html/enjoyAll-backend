@@ -21,6 +21,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                                 request
+                                        .requestMatchers("/chat").permitAll()
                                         .requestMatchers("/hc", "/env").permitAll()
                                         .requestMatchers("/auth/**").permitAll()
                                         .requestMatchers("/board/**").permitAll()
