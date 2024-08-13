@@ -29,7 +29,7 @@ public class WebCrawlerService {
     public void init() {
         List<String> urls = UrlGenerator.generateUrls();
         for (String url : urls) {
-//            crawl(url);
+            crawl(url);
         }
     }
 

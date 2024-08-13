@@ -42,7 +42,7 @@ public class DynamicWebCrawlerService {
     @PostConstruct
     public void init() throws Exception {
         for (int i = 1; i < 1000; ++i) {
-            sendPostRequest(i);
+//            sendPostRequest(i);
             logger.info(i +" / 1000");
         }
     }
