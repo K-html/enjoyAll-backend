@@ -33,14 +33,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (pathMatcher.match("/hc", request.getServletPath()) ||
                 pathMatcher.match("/env", request.getServletPath()) ||
                 pathMatcher.match("/auth/**", request.getServletPath()) ||
-                pathMatcher.match("/chat", request.getServletPath())
+                pathMatcher.match("/chat", request.getServletPath()) ||
+                pathMatcher.match("/board/ai", request.getServletPath())
         ) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        if (pathMatcher.match("/board/ai", request.getServletPath()) ||
-                pathMatcher.match("/crawledData/ai", request.getServletPath())) {
+        if (pathMatcher.match("/board/ai", request.getServletPath())) {
             String jwtToken = jwtTokenUtil.getTokenFromRequest(request);
 
             String secretKey = jwtTokenUtil.extractIdentifier(jwtToken);

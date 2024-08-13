@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URL;
@@ -42,12 +43,14 @@ public class DynamicWebCrawlerService {
     public void init() throws Exception {
         for (int i = 1; i < 1000; ++i) {
             sendPostRequest(i);
+            logger.info(i +" / 1000");
         }
     }
     /*
     https://www.bokjiro.go.kr/ssis-tbu/TWAT52005M/twataa/wlfareInfo/selectWlfareInfo.do
     {"dmSearchParam":{"page":"5","onlineYn":"","searchTerm":"","tabId":"1","orderBy":"date","bkjrLftmCycCd":"","daesang":"","period":"","age":"","region":"경기도 용인시","jjim":"","subject":"","favoriteKeyword":"Y","sido":"","gungu":"","endYn":"N"},"dmScr":{"curScrId":"tbu/app/twat/twata/twataa/TWAT52005M","befScrId":""}}
      */
+    @Transactional
     public String sendPostRequest(int page) throws Exception {
         String url = "https://www.bokjiro.go.kr/ssis-tbu/TWAT52005M/twataa/wlfareInfo/selectWlfareInfo.do";
 
@@ -97,7 +100,6 @@ public class DynamicWebCrawlerService {
             crawledData.setUrl(url);
             crawledData.setContent(htmlDOM);
             crawledData.setTitle(welfareInfo.getWelfareInfoName());
-//            logger.info("Crawled data: {}", crawledData);
             crawledDataRepository.save(crawledData);
         }
         // 응답 반환
