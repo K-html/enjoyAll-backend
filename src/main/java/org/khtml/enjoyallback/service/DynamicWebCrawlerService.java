@@ -40,11 +40,9 @@ public class DynamicWebCrawlerService {
 
     @PostConstruct
     public void init() throws Exception {
-        for (int i = 1; i < 2; ++i) {
+        for (int i = 1; i < 1000; ++i) {
             sendPostRequest(i);
-
         }
-
     }
     /*
     https://www.bokjiro.go.kr/ssis-tbu/TWAT52005M/twataa/wlfareInfo/selectWlfareInfo.do
@@ -93,6 +91,7 @@ public class DynamicWebCrawlerService {
         for (WelfareInfoDto welfareInfo : welfareInfos) {
             String id = welfareInfo.getWelfareInfoId();
             url = "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId="+id+"&wlfareInfoReldBztpCd=01";
+            logger.info("Connect : " + url);
             String htmlDOM = scrapeDynamicPage(url);
             CrawledData crawledData = new CrawledData();
             crawledData.setUrl(url);
@@ -139,13 +138,12 @@ public class DynamicWebCrawlerService {
         try {
             driver.get(url);
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-//            wait.until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
-            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("pageLoadingImage")));
+            wait.until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+//            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("pageLoadingImage")));
 
-//            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#uuid-7z > div > a")));
+//            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pageLoadingImage")));
             // #uuid-73 식별자를 가진 <div> 요소 찾기
             WebElement divElement = driver.findElement(By.id("uuid-73"));
-
             return divElement.getAttribute("outerHTML");
         } finally {
             driver.quit();
