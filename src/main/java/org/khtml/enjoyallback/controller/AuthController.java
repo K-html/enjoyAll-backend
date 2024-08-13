@@ -1,7 +1,6 @@
 package org.khtml.enjoyallback.controller;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.khtml.enjoyallback.api.Api_Response;
 import org.khtml.enjoyallback.config.jwt.JwtTokenUtil;
@@ -62,8 +61,7 @@ public class AuthController {
         return ApiResponseUtil.createSuccessResponse("SUCCESS LOGIN", response);
     }
     @PostMapping("/ai")
-    public ResponseEntity<Api_Response<Object>> loginWithAI(HttpServletRequest request) {
-        String secretKey = request.getHeader("AI_SECRET_KEY");
+    public ResponseEntity<Api_Response<Object>> loginWithAI(@RequestHeader("AI_SECRET_KEY") String secretKey) {
         if (secretKey.equals(AI_SERVER_SECRET)) {
             String jwtAccessToken = jwtTokenUtil.createAccessToken(secretKey);
             String jwtRefreshToken = jwtTokenUtil.createRefreshToken(secretKey);
