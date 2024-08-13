@@ -33,7 +33,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (pathMatcher.match("/hc", request.getServletPath()) ||
                 pathMatcher.match("/env", request.getServletPath()) ||
                 pathMatcher.match("/auth/**", request.getServletPath()) ||
-                pathMatcher.match("/chat", request.getServletPath())) {
+                pathMatcher.match("/chat", request.getServletPath())
+        ) {
             filterChain.doFilter(request, response);
             return;
         }
