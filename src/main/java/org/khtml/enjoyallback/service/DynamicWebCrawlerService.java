@@ -50,7 +50,7 @@ public class DynamicWebCrawlerService {
      */
     public String sendPostRequest(int page) throws Exception {
         String url = "https://www.bokjiro.go.kr/ssis-tbu/TWAT52005M/twataa/wlfareInfo/selectWlfareInfo.do";
-        System.out.println(url);
+
         // 요청 헤더 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
