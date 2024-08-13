@@ -38,10 +38,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         if (pathMatcher.match("/board/ai", request.getServletPath()) ||
-        pathMatcher.match("/crawleData/ai", request.getServletPath())) {
-            String jwtToken = jwtTokenUtil.extractTokenFromRequest(request);
+                pathMatcher.match("/crawleData/ai", request.getServletPath())) {
+            String jwtToken = jwtTokenUtil.getTokenFromRequest(request);
 
-            String secretKey = jwtTokenUtil.extractUserId(jwtToken);
+            String secretKey = jwtTokenUtil.extractIdentifier(jwtToken);
             if (secretKey.equals(AI_SECRET_KEY)) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(secretKey);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -52,9 +52,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }
 
-        String jwtToken = jwtTokenUtil.extractTokenFromRequest(request);
+        String jwtToken = jwtTokenUtil.getTokenFromRequest(request);
 
-        String userId = jwtTokenUtil.extractUserId(jwtToken);
+        String userId = jwtTokenUtil.extractIdentifier(jwtToken);
         if (StringUtils.hasText(jwtToken) && jwtTokenUtil.isValidateToken(jwtToken, userId)) {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
