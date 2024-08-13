@@ -1,7 +1,6 @@
 package org.khtml.enjoyallback.controller;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.khtml.enjoyallback.api.Api_Response;
 import org.khtml.enjoyallback.config.jwt.JwtTokenUtil;
@@ -36,6 +35,7 @@ public class AuthController {
     /*
     카카오 소셜 정보 id와 email을 받아 사용자 존재 여부를 확인하고, 회원 가입 안내 또는 로그인을 진행하는 api
      */
+
     @PostMapping("/kakao")
     public ResponseEntity<Api_Response<Object>> loginWithKakao(@RequestBody Map<String, String> request) throws Exception {
         String socialId = request.get("#socialId");
@@ -62,8 +62,7 @@ public class AuthController {
         return ApiResponseUtil.createSuccessResponse("SUCCESS LOGIN", response);
     }
     @PostMapping("/ai")
-    public ResponseEntity<Api_Response<Object>> loginWithAI(HttpServletRequest request) {
-        String secretKey = request.getHeader("AI_SECRET_KEY");
+    public ResponseEntity<Api_Response<Object>> loginWithAI(@RequestHeader("AI_SECRET_KEY") String secretKey) {
         if (secretKey.equals(AI_SERVER_SECRET)) {
             String jwtAccessToken = jwtTokenUtil.createAccessToken(secretKey);
             String jwtRefreshToken = jwtTokenUtil.createRefreshToken(secretKey);

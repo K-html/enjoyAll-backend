@@ -10,15 +10,19 @@ import java.util.stream.Collectors;
 @Data
 public class UserInfo {
     private Long id;
-    private String name;
-    private String contact;
+    private String socialName;
+    private String socialId;
+    private String socialEmail;
+    private Integer age;
     private List<String> keywords = new ArrayList<>();
 
     public static UserInfo fromEntity(User user) {
         UserInfo userInfo = new UserInfo();
         userInfo.setId(user.getId());
-        userInfo.setName(user.getName());
-        userInfo.setContact(user.getContact());
+        userInfo.setSocialName(user.getSocialName());
+        userInfo.setSocialId(user.getSocialId());
+        userInfo.setSocialEmail(user.getSocialEmail());
+        userInfo.setAge(user.getAge());
         userInfo.setKeywords(user.getKeywords().stream()
                 .map(keyword -> {
                     if (keyword != null && keyword.getKeyword() != null) {

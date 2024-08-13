@@ -19,7 +19,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
     private String socialName;
 
     @Column(name = "social_id")
@@ -28,7 +28,7 @@ public class User {
     @Column(name = "social_email", unique = true)
     private String socialEmail;
 
-    private String contact;
+    private Integer age;
 
     private KeywordEnum keyword;
 
