@@ -28,6 +28,7 @@ public class BoardController {
                 savedBoardDetails
         );
     }
+
     @GetMapping("/ai")
     public ResponseEntity<Api_Response<List<CrawledData>>> getCrawledData() {
         List<CrawledData> crawledData = boardService.getCrawledData();

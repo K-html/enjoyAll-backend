@@ -47,6 +47,8 @@ public class Board {
     @Column(name = "view_count")
     private Long viewCount=0L;
 
+    private String age;
+
     public void AiCreateBoard(BoardDetail boardDetail){
         this.imgUrl = boardDetail.getImgUrl();
         this.title = boardDetail.getTitle();
@@ -58,6 +60,7 @@ public class Board {
         this.contact = boardDetail.getContact();
         this.content = boardDetail.getContent();
         this.applyMethod = boardDetail.getApplyMethod();
+        this.age = boardDetail.getAge();
     }
 }
 

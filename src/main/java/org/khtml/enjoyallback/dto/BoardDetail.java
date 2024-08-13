@@ -21,6 +21,7 @@ public class BoardDetail{
     private String content;
     private String applyMethod;
     private Long viewCount;
+    private String age;
 
     public static BoardDetail fromEntity(Board board) {
         BoardDetail boardDetail = new BoardDetail();
@@ -36,6 +37,7 @@ public class BoardDetail{
         boardDetail.setContent(board.getContent());
         boardDetail.setApplyMethod(board.getApplyMethod());
         boardDetail.setViewCount(board.getViewCount());
+        boardDetail.setAge(board.getAge());
         return boardDetail;
     }
 }
