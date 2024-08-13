@@ -28,36 +28,36 @@ public class JwtTokenUtil {
     private Key key;
 
     @PostConstruct
-    public void inti() {
+    public void init() {
         byte[] keyBytes = SECRET_KEY.getBytes();
         this.key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
     }
 
-    public String createAccessToken(String userId) {
-        return createToken(userId, ACCESS_TOKEN_EXPIRY_TIME);
+    public String createAccessToken(String identifier) {
+        return createToken(identifier, ACCESS_TOKEN_EXPIRY_TIME);
     }
 
-    public String createRefreshToken(String userId) {
-        return createToken(userId, REFRESH_TOKEN_EXPIRY_TIME);
+    public String createRefreshToken(String identifier) {
+        return createToken(identifier, REFRESH_TOKEN_EXPIRY_TIME);
     }
 
-    private String createToken(String userId, long expiryTime) {
+    private String createToken(String identifier, long expiryTime) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expiryTime);
         return Jwts.builder()
-                .setSubject(userId.toString())
+                .setSubject(identifier)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public boolean isValidateToken(String token, String userId) {
-        final String extractedUserId = extractUserId(token);
-        return (extractedUserId.equals(userId) && isTokenNotExpired(token));
+    public boolean isValidateToken(String token, String identifier) {
+        final String identifierInToken = extractIdentifier(token);
+        return (identifierInToken.equals(identifier) && isTokenNotExpired(token));
     }
 
-    public boolean isTokenNotExpired(String token) {
+    private boolean isTokenNotExpired(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -66,7 +66,7 @@ public class JwtTokenUtil {
                 .getExpiration()
                 .before(new Date());
     }
-    public String extractTokenFromRequest(HttpServletRequest request) {
+    public String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
@@ -74,7 +74,7 @@ public class JwtTokenUtil {
             throw new AccessDeniedException("올바르지 않은 엑세스 토큰");
         }
     }
-    public String extractUserId(String token) {
+    public String extractIdentifier(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

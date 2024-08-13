@@ -1,6 +1,7 @@
 package org.khtml.enjoyallback.controller;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.khtml.enjoyallback.api.Api_Response;
 import org.khtml.enjoyallback.config.jwt.JwtTokenUtil;
@@ -61,7 +62,8 @@ public class AuthController {
         return ApiResponseUtil.createSuccessResponse("SUCCESS LOGIN", response);
     }
     @PostMapping("/ai")
-    public ResponseEntity<Api_Response<Object>> loginWithAI(@RequestHeader("AI_SECRET_KEY") String secretKey) {
+    public ResponseEntity<Api_Response<Object>> loginWithAI(HttpServletRequest request) {
+        String secretKey = request.getHeader("AI_SECRET_KEY");
         if (secretKey.equals(AI_SERVER_SECRET)) {
             String jwtAccessToken = jwtTokenUtil.createAccessToken(secretKey);
             String jwtRefreshToken = jwtTokenUtil.createRefreshToken(secretKey);
@@ -104,10 +106,10 @@ public class AuthController {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             refreshToken = authorizationHeader.substring(7);
         }
-        String userId = jwtTokenUtil.extractUserId(refreshToken);
-        if (jwtTokenUtil.isValidateToken(refreshToken, userId)) {
-            String newAccessToken = jwtTokenUtil.createAccessToken(userId);
-            String newRefreshToken = jwtTokenUtil.createRefreshToken(userId);
+        String identifier = jwtTokenUtil.extractIdentifier(refreshToken);
+        if (jwtTokenUtil.isValidateToken(refreshToken, identifier)) {
+            String newAccessToken = jwtTokenUtil.createAccessToken(identifier);
+            String newRefreshToken = jwtTokenUtil.createRefreshToken(identifier);
             Map<String, String> response = new HashMap<>();
             response.put("#jwtAccessToken", newAccessToken);
             response.put("#jwtRefreshToken", newRefreshToken);
@@ -123,10 +125,10 @@ public class AuthController {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             refreshToken = authorizationHeader.substring(7);
         }
-        String userId = jwtTokenUtil.extractUserId(refreshToken);
-        if (jwtTokenUtil.isValidateToken(refreshToken, userId)) {
-            String newAccessToken = jwtTokenUtil.createAccessToken(userId);
-            String newRefreshToken = jwtTokenUtil.createRefreshToken(userId);
+        String identifier = jwtTokenUtil.extractIdentifier(refreshToken);
+        if (jwtTokenUtil.isValidateToken(refreshToken, identifier)) {
+            String newAccessToken = jwtTokenUtil.createAccessToken(identifier);
+            String newRefreshToken = jwtTokenUtil.createRefreshToken(identifier);
             Map<String, String> response = new HashMap<>();
             response.put("#jwtAccessToken", newAccessToken);
             response.put("#jwtRefreshToken", newRefreshToken);
