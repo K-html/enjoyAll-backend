@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (pathMatcher.match("/board/ai", request.getServletPath()) ||
-                pathMatcher.match("/crawleData/ai", request.getServletPath())) {
+                pathMatcher.match("/crawledData/ai", request.getServletPath())) {
             String jwtToken = jwtTokenUtil.getTokenFromRequest(request);
 
             String secretKey = jwtTokenUtil.extractIdentifier(jwtToken);
