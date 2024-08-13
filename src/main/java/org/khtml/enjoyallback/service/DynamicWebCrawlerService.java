@@ -146,7 +146,7 @@ public class DynamicWebCrawlerService {
             // #uuid-73 식별자를 가진 <div> 요소 찾기
             WebElement divElement = driver.findElement(By.id("uuid-73"));
 
-            return divElement.getAttribute("outerHTML")
+            return divElement.getAttribute("outerHTML");
         } finally {
             driver.quit();
         }
