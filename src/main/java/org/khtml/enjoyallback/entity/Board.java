@@ -27,6 +27,8 @@ public class Board {
     @Enumerated(EnumType.STRING)
     private KeywordEnum keyword;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String eligibility;
 
     @Column(name = "start_date")

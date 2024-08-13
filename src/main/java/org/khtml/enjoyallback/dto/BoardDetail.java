@@ -1,6 +1,7 @@
 package org.khtml.enjoyallback.dto;
 
 import lombok.Data;
+import lombok.Getter;
 import org.khtml.enjoyallback.entity.Board;
 import org.khtml.enjoyallback.global.Category;
 import org.khtml.enjoyallback.global.KeywordEnum;
