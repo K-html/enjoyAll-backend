@@ -8,6 +8,8 @@ import org.jsoup.HttpStatusException;
 import org.khtml.enjoyallback.entity.CrawledData;
 import org.khtml.enjoyallback.repository.CrawledDataRepository;
 import org.khtml.enjoyallback.util.UrlGenerator;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -19,17 +21,18 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class WebCrawlerService {
 
     private static final Logger logger = LoggerFactory.getLogger(WebCrawlerService.class);
 
     final private CrawledDataRepository crawledDataRepository;
 
-    @PostConstruct
+    @Scheduled(initialDelay = 10_000, fixedDelay = Long.MAX_VALUE)
     public void init() {
         List<String> urls = UrlGenerator.generateUrls();
         for (String url : urls) {
-//            crawl(url);
+            crawl(url);
         }
     }
 

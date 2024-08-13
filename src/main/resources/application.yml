@@ -59,7 +59,7 @@ spring:
     name: Enjoy-All
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show_sql: true
     properties:
       hibernate:
