@@ -58,7 +58,7 @@ public class JwtTokenUtil {
     }
 
     private boolean isTokenNotExpired(String token) {
-        return Jwts.parserBuilder()
+        return !Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)

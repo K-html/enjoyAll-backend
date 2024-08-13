@@ -121,10 +121,12 @@ public class AuthController {
     @GetMapping("/token/refresh/ai")
     public ResponseEntity<?> refreshTokenForAI(@RequestHeader("Authorization") String authorizationHeader) {
         String refreshToken = null;
+        System.out.println(authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             refreshToken = authorizationHeader.substring(7);
         }
         String identifier = jwtTokenUtil.extractIdentifier(refreshToken);
+        System.out.println(identifier);
         if (jwtTokenUtil.isValidateToken(refreshToken, identifier)) {
             String newAccessToken = jwtTokenUtil.createAccessToken(identifier);
             String newRefreshToken = jwtTokenUtil.createRefreshToken(identifier);
